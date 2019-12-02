@@ -1,12 +1,11 @@
 package two_1202_program_alarm
 
 import (
-	"testing"
 	"io/ioutil"
-	"strings"
 	"strconv"
+	"strings"
+	"testing"
 )
-
 
 func TestTwelveZeroTwoProgramAlarmPartOneExampleInput(t *testing.T) {
 	exampleInputs := [][]int{
