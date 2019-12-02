@@ -2,17 +2,56 @@ package two_1202_program_alarm
 
 import (
 	"testing"
+	"io/ioutil"
+	"strings"
+	"strconv"
 )
 
 
 func TestTwelveZeroTwoProgramAlarmPartOneExampleInput(t *testing.T) {
-	exampleInputOne := []int{1, 9, 10, 3, 2, 3, 11, 0, 99, 30, 40, 50}
-	exampleInputTwo := [5]int{1, 0, 0, 0, 99}
-	exampleInputThree := [5]int{2, 3, 0, 3, 99}
-	exampleInputFour := [6]int{2, 4, 4, 5, 99, 0}
-	exampleInputFive := [9]int{1, 1, 1, 4, 99, 5, 6, 0, 99}
+	exampleInputs := [][]int{
+		{1, 0, 0, 0, 99},
+		{2, 3, 0, 3, 99},
+		{2, 4, 4, 5, 99, 0},
+		{1, 1, 1, 4, 99, 5, 6, 0, 99},
+	}
 
-	t.Log(exampleInputOne)
-	exampleOuputOne := TwelveZeroTwoProgramAlarmPartOne(exampleInputOne)
-	t.Log(exampleOuputOne)
+	expectedExampleOutputs := [][]int{
+		{2, 0, 0, 0, 99},
+		{2, 3, 0, 6, 99},
+		{2, 4, 4, 5, 99, 9801},
+		{30, 1, 1, 4, 2, 5, 6, 0, 99},
+	}
+
+	for i, input := range exampleInputs {
+		output := TwelveZeroTwoProgramAlarmPartOne(input)
+
+		if output != expectedExampleOutputs[i][0] {
+			t.Fail()
+		}
+
+		for j, num := range input {
+			if num != expectedExampleOutputs[i][j] {
+				t.Fail()
+			}
+		}
+	}
+}
+
+func TestTwelveZeroTwoProgramAlarmPartOneActualInput(t *testing.T) {
+	inputBytes, _ := ioutil.ReadFile("2_input.txt")
+	inputString := string(inputBytes)
+	inputSplit := strings.Split(inputString, ",")
+	input := []int{}
+	for _, str := range inputSplit {
+		num, _ := strconv.Atoi(str)
+		input = append(input, num)
+	}
+
+	// Perform the correction
+	input[1] = 12
+	input[2] = 2
+
+	output := TwelveZeroTwoProgramAlarmPartOne(input)
+	t.Log(output)
 }
