@@ -54,3 +54,17 @@ func TestTwelveZeroTwoProgramAlarmPartOneActualInput(t *testing.T) {
 	output := TwelveZeroTwoProgramAlarmPartOne(input)
 	t.Log(output)
 }
+
+func TestTwelveZeroTwoProgramAlarmPartTwoActualInput(t *testing.T) {
+	inputBytes, _ := ioutil.ReadFile("2_input.txt")
+	inputString := string(inputBytes)
+	inputSplit := strings.Split(inputString, ",")
+	input := []int{}
+	for _, str := range inputSplit {
+		num, _ := strconv.Atoi(str)
+		input = append(input, num)
+	}
+
+	output := TwelveZeroTwoProgramAlarmPartTwo(input, 19690720)
+	t.Log(output)
+}

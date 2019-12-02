@@ -19,3 +19,28 @@ func TwelveZeroTwoProgramAlarmPartOne(program []int) int {
 
 	return program[0]
 }
+
+func TwelveZeroTwoProgramAlarmPartTwo(program []int, num int) int {
+	noun := 0
+	verb := 0
+
+	for i := 0; i < 100; i++ {
+		for j := 0; j < 100; j++ {
+			programCopy := make([]int, len(program))
+			copy(programCopy, program)
+
+			programCopy[1] = i
+			programCopy[2] = j
+
+			output := TwelveZeroTwoProgramAlarmPartOne(programCopy)
+
+			if output == num {
+				noun = i
+				verb = j
+				break
+			}
+		}
+	}
+
+	return (100 * noun) + verb
+}
