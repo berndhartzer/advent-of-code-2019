@@ -46,7 +46,6 @@ func TestCrossedWiresPartOneExampleInput(t *testing.T) {
 }
 
 func TestCrossedWiresPartOneActualInput(t *testing.T) {
-	t.Skip()
 	file, err := os.Open("./3_input.txt")
 	if err != nil {
 		log.Fatal(err)
