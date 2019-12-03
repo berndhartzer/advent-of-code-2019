@@ -73,6 +73,10 @@ func CrossedWiresPartOne(wires [][]string) int {
 	return closest
 }
 
+func CrossedWiresPartTwo(wires [][]string) int {
+	return 0
+}
+
 func Abs(n int) int {
 	if n < 0 {
 		return -n
