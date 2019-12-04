@@ -79,15 +79,13 @@ func CrossedWiresPartOne(wires [][]string) int {
 
 func CrossedWiresPartTwo(wires [][]string) int {
 	grid := make(map[string]*GridSquare)
-	// grid := make(map[string]GridSquare)
-	// overlaps := []string{}
 
 	// Build up the grid with wires
 	for i, wire := range wires {
 		coord := Coord{0, 0}
+		steps := 0
 
 		for _, instruction := range wire {
-			steps := 0
 			split := []rune(instruction)
 			distance, _ := strconv.Atoi(string(split[1:]))
 
@@ -96,11 +94,8 @@ func CrossedWiresPartTwo(wires [][]string) int {
 				coord.Move(string(split[0]))
 
 				location := fmt.Sprintf("%d,%d", coord.X, coord.Y)
-				fmt.Println(location)
 
-				// grid[location] = append(grid[location], i)
 				square, ok := grid[location]
-				// fmt.Println(ok)
 				if !ok {
 					grid[location] = &GridSquare{0, 0}
 					if i == 1 {
@@ -109,10 +104,6 @@ func CrossedWiresPartTwo(wires [][]string) int {
 						grid[location].WireTwoSteps = steps
 					}
 				} else {
-					// fmt.Println("got else")
-					// fmt.Println(square)
-					// fmt.Println(square.WireOneSteps, square.WireTwoSteps)
-
 					if i == 1 {
 						if square.WireOneSteps == 0 {
 							square.WireOneSteps = steps
@@ -122,28 +113,24 @@ func CrossedWiresPartTwo(wires [][]string) int {
 							square.WireTwoSteps = steps
 						}
 					}
-					fmt.Println(square.WireOneSteps, square.WireTwoSteps)
+
 					grid[location] = square
 				}
-
-				// grid[location] = square
-				// fmt.Println("square")
-				// fmt.Println(square)
-
-
 			}
 		}
 	}
 
-	fmt.Println(grid)
-	for _, thing := range grid {
-		if thing.WireOneSteps != 0 && thing.WireTwoSteps != 0 {
-			fmt.Println(thing)
+	leastSteps := 0
+	for _, point := range grid {
+		if point.WireOneSteps != 0 && point.WireTwoSteps != 0 {
+			steps := point.WireOneSteps + point.WireTwoSteps
+			if steps < leastSteps || leastSteps == 0 {
+				leastSteps = steps
+			}
 		}
 	}
 
-
-	return 0
+	return leastSteps
 }
 
 func Abs(n int) int {
