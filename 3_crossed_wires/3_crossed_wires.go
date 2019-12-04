@@ -2,8 +2,8 @@ package three_crossed_wires
 
 import (
 	"fmt"
-	"strings"
 	"strconv"
+	"strings"
 )
 
 type Coord struct {

@@ -4,8 +4,8 @@ import (
 	"bufio"
 	"log"
 	"os"
-	"testing"
 	"strings"
+	"testing"
 )
 
 func TestCrossedWiresPartOneExampleInput(t *testing.T) {
