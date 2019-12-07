@@ -46,3 +46,45 @@ func TestUniversalOrbitMapPartOneActualInput(t *testing.T) {
 	output := UniversalOrbitMapPartOne(input)
 	t.Log(output)
 }
+
+func TestUniversalOrbitMapPartTwoExampleInput(t *testing.T) {
+	exampleInput := []string{
+		"COM)B",
+		"B)C",
+		"C)D",
+		"D)E",
+		"E)F",
+		"B)G",
+		"G)H",
+		"D)I",
+		"E)J",
+		"J)K",
+		"K)L",
+		"K)YOU",
+		"I)SAN",
+	}
+	expectedOutput := 4
+
+	output := UniversalOrbitMapPartTwo(exampleInput)
+	if output != expectedOutput {
+		t.Fail()
+	}
+}
+
+func TestUniversalOrbitMapPartTwoActualInput(t *testing.T) {
+	file, err := os.Open("./6_input.txt")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	var input []string
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
+		input = append(input, line)
+	}
+
+	output := UniversalOrbitMapPartTwo(input)
+	t.Log(output)
+}
