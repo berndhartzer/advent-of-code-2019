@@ -137,7 +137,6 @@ func SunnyWithAChanceOfAsteroidsPartTwo(program []int, input int) int {
 			} else {
 				program[outputPos] = 0
 			}
-
 			i += 4
 
 		}
