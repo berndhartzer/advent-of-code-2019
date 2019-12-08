@@ -69,6 +69,64 @@ func TestAmplificationCircuitPartOneActualInput(t *testing.T) {
 	t.Log(highest)
 }
 
+func TestAmplificationCircuitPartTwoExampleInput(t *testing.T) {
+	exampleInputs := [][]int{
+		{3, 26, 1001, 26, -4, 26, 3, 27, 1002, 27, 2, 27, 1, 27, 26, 27, 4, 27, 1001, 28, -1, 28, 1005, 28, 6, 99, 0, 0, 5},
+		{3, 52, 1001, 52, -5, 52, 3, 53, 1, 52, 56, 54, 1007, 54, 5, 55, 1005, 55, 26, 1001, 54, -5, 54, 1105, 1, 12, 1, 53, 54, 53, 1008, 54, 0, 55, 1001, 55, 1, 55, 2, 53, 55, 53, 4, 53, 1001, 56, -1, 56, 1005, 56, 6, 99, 0, 0, 0, 0, 10},
+	}
+	exampleInputSequences := [][]int{
+		{9, 8, 7, 6, 5},
+		{9, 7, 8, 5, 6},
+	}
+
+	expectedExampleOutputs := []int{
+		139629729,
+		18216,
+	}
+
+	for i := range exampleInputs {
+		output := AmplificationCircuitPartTwo(exampleInputs[i], exampleInputSequences[i])
+
+		if output != expectedExampleOutputs[i] {
+			t.Fail()
+		}
+	}
+}
+
+func TestAmplificationCircuitPartTwoActualInput(t *testing.T) {
+	var inputSplit []string
+	file, _ := os.Open("./7_input.txt")
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
+		inputSplit = strings.Split(line, ",")
+	}
+
+	input := []int{}
+
+	for _, str := range inputSplit {
+		num, _ := strconv.Atoi(str)
+		input = append(input, num)
+	}
+
+	highest := 0
+	basePermutation := []int{5, 6, 7, 8, 9}
+
+	all := permutations(basePermutation)
+
+	for _, permutation := range all {
+		inputCopy := make([]int, len(input))
+		copy(inputCopy, input)
+
+		output := AmplificationCircuitPartTwo(inputCopy, permutation)
+		if output > highest {
+			highest = output
+		}
+	}
+
+	t.Log(highest)
+}
+
 // https://stackoverflow.com/a/30226442/5374111
 func permutations(arr []int) [][]int {
 	var helper func([]int, int)
