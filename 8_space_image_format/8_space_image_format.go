@@ -52,11 +52,11 @@ func SpaceImageFormatPartTwo(image string, width, height int) [][]string {
 
 		pixel := 0
 		for j := 0; j < height; j += 1 {
-			for i := 0; i < width; i += 1 {
+			for k := 0; k < width; k += 1 {
 
 				if string(fullLayer[pixel]) == "0" || string(fullLayer[pixel]) == "1" {
-					if layer[j][i] == "" {
-						layer[j][i] = paint[string(fullLayer[pixel])]
+					if layer[j][k] == "" {
+						layer[j][k] = paint[string(fullLayer[pixel])]
 					}
 				}
 
