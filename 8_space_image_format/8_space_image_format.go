@@ -1,14 +1,14 @@
 package eight_space_image_format
 
-type Layer struct {
+type LayerCounter struct {
 	zeros, ones, twos int
 }
 
 func SpaceImageFormatPartOne(image string, width, height int) int {
-	layers := []*Layer{}
+	layers := []*LayerCounter{}
 
 	for i := 0; i < len(image); i += width * height {
-		layer := &Layer{0, 0, 0}
+		layer := &LayerCounter{0, 0, 0}
 
 		for _, pixel := range image[i : i+(width*height)] {
 			switch string(pixel) {
@@ -34,4 +34,36 @@ func SpaceImageFormatPartOne(image string, width, height int) int {
 	}
 
 	return output
+}
+
+func SpaceImageFormatPartTwo(image string, width, height int) [][]string {
+	paint := map[string]string{
+		"0": "_",
+		"1": "*",
+	}
+
+	layer := make([][]string, height)
+	for i := range layer {
+		layer[i] = make([]string, width)
+	}
+
+	for i := 0; i < len(image); i += width * height {
+		fullLayer := image[i : i+(width*height)]
+
+		pixel := 0
+		for j := 0; j < height; j += 1 {
+			for i := 0; i < width; i += 1 {
+
+				if string(fullLayer[pixel]) == "0" || string(fullLayer[pixel]) == "1" {
+					if layer[j][i] == "" {
+						layer[j][i] = paint[string(fullLayer[pixel])]
+					}
+				}
+
+				pixel += 1
+			}
+		}
+	}
+
+	return layer
 }
