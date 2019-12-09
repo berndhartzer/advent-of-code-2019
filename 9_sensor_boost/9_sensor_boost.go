@@ -45,6 +45,10 @@ func (c *IntCodeComputer) getValue(i, param int) int {
 	return value
 }
 
+func (c *IntCodeComputer) AdjustRelativeBase(adj int) {
+	c.RelativeBase += adj
+}
+
 func RunIntCodeComputer(originalProgram []int, dst *[]int, input [2]int, i int, returnOutput bool) {
 	program := make([]int, 5000)
 	copy(program, originalProgram)
@@ -207,9 +211,9 @@ func RunIntCodeComputer(originalProgram []int, dst *[]int, input [2]int, i int, 
 			i += 4
 
 		case 9:
-			relativeBase += paramOne
+			// relativeBase += paramOne
+			computer.AdjustRelativeBase(getValue(i, 1))
 			i += 2
-
 		}
 	}
 
