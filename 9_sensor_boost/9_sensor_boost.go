@@ -35,16 +35,21 @@ func IntCodeComputer(originalProgram []int, dst *[]int, input [2]int, i int, ret
 		fmt.Println(opCodeParts)
 
 		opCode := opCodeParts[4]
-		paramOneMode := opCodeParts[2]
-		paramTwoMode := opCodeParts[1]
-		paramThreeMode := opCodeParts[0]
+		// paramOneMode := opCodeParts[2]
+		// paramTwoMode := opCodeParts[1]
+		// paramThreeMode := opCodeParts[0]
+		paramMode := map[int]int{
+			1: opCodeParts[2],
+			2: opCodeParts[1],
+			3: opCodeParts[0],
+		}
 
 		paramOne := 0
-		if paramOneMode == 0 {
+		if paramMode[1] == 0 {
 			paramOne = program[program[i+1]]
-		} else if paramOneMode == 1 {
+		} else if paramMode[1] == 1 {
 			paramOne = program[i+1]
-		} else if paramOneMode == 2 {
+		} else if paramMode[1] == 2 {
 			paramOne = program[relativeBase + program[i+1]]
 		}
 
@@ -53,21 +58,21 @@ func IntCodeComputer(originalProgram []int, dst *[]int, input [2]int, i int, ret
 			return // TODO: remove
 		case 1, 2:
 			paramTwo := 0
-			if paramTwoMode == 0 {
+			if paramMode[2] == 0 {
 				paramTwo = program[program[i+2]]
-			} else if paramTwoMode == 1 {
+			} else if paramMode[2] == 1 {
 				paramTwo = program[i+2]
-			} else if paramTwoMode == 2 {
+			} else if paramMode[2] == 2 {
 				paramTwo = program[relativeBase + program[i+2]]
 			}
 
 			// outputPos := program[i+3]
 			paramThree := 0
-			if paramThreeMode == 0 {
+			if paramMode[3] == 0 {
 				paramThree = program[program[i+3]]
-			} else if paramThreeMode == 1 {
+			} else if paramMode[3] == 1 {
 				// 
-			} else if paramThreeMode == 2 {
+			} else if paramMode[3] == 2 {
 				paramThree = program[relativeBase + program[i+3]]
 			}
 
@@ -82,20 +87,20 @@ func IntCodeComputer(originalProgram []int, dst *[]int, input [2]int, i int, ret
 
 		case 3:
 			// posOne := program[i+1]
-			// if paramOneMode == 0 {
+			// if paramMode[1] == 0 {
 			// 	program[posOne] = input[inputIndex]
-			// } else if paramOneMode == 2 {
+			// } else if paramMode[1] == 2 {
 			// 	// program[posOne] = input[inputIndex]
 			// 	program[relativeBase + program[paramOne]] = input[inputIndex]
 			// }
 
 
 			// paramOne := 0
-			if paramOneMode == 0 {
+			if paramMode[1] == 0 {
 				program[program[i+1]] = input[inputIndex]
-			} else if paramOneMode == 1 {
+			} else if paramMode[1] == 1 {
 				// paramOne = program[i+1]
-			} else if paramOneMode == 2 {
+			} else if paramMode[1] == 2 {
 				program[relativeBase + program[i+1]] = input[inputIndex]
 			}
 
@@ -114,11 +119,11 @@ func IntCodeComputer(originalProgram []int, dst *[]int, input [2]int, i int, ret
 
 		case 5, 6:
 			paramTwo := 0
-			if paramTwoMode == 0 {
+			if paramMode[2] == 0 {
 				paramTwo = program[program[i+2]]
-			} else if paramTwoMode == 1 {
+			} else if paramMode[2] == 1 {
 				paramTwo = program[i+2]
-			} else if paramTwoMode == 2 {
+			} else if paramMode[2] == 2 {
 				paramTwo = program[relativeBase + program[i+2]]
 			}
 
@@ -130,21 +135,21 @@ func IntCodeComputer(originalProgram []int, dst *[]int, input [2]int, i int, ret
 
 		case 7, 8:
 			paramTwo := 0
-			if paramTwoMode == 0 {
+			if paramMode[2] == 0 {
 				paramTwo = program[program[i+2]]
-			} else if paramTwoMode == 1 {
+			} else if paramMode[2] == 1 {
 				paramTwo = program[i+2]
-			} else if paramTwoMode == 2 {
+			} else if paramMode[2] == 2 {
 				paramTwo = program[relativeBase + program[i+2]]
 			}
 
 			// outputPos := program[i+3]
 			paramThree := 0
-			if paramThreeMode == 0 {
+			if paramMode[3] == 0 {
 				paramThree = program[program[i+3]]
-			} else if paramThreeMode == 1 {
+			} else if paramMode[3] == 1 {
 				// 
-			} else if paramThreeMode == 2 {
+			} else if paramMode[3] == 2 {
 				paramThree = program[relativeBase + program[i+3]]
 			}
 
