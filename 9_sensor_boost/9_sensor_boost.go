@@ -5,15 +5,54 @@ import (
 )
 
 func SensorBoostPartOne(program []int, input int) []int {
-	// output, _, _ := IntCodeComputer(program, &dst, [2]int{0, 0}, 0, false)
+	// output, _, _ := RunIntCodeComputer(program, &dst, [2]int{0, 0}, 0, false)
 	output := []int{}
-	IntCodeComputer(program, &output, [2]int{input, input}, 0, false)
+	RunIntCodeComputer(program, &output, [2]int{input, input}, 0, false)
 	return output
 }
 
-func IntCodeComputer(originalProgram []int, dst *[]int, input [2]int, i int, returnOutput bool) {
+type IntCodeComputer struct {
+	Program []int
+	OpCode int
+	ParamMode map[int]int
+	RelativeBase int
+}
+
+func (c *IntCodeComputer) ParseOpCode(i int) {
+	opCodeRaw := c.Program[i]
+	opCodeParts := [5]int{}
+	for j := 4; j >= 0; j -= 1 {
+		opCodeParts[j] = opCodeRaw % 10
+		opCodeRaw = opCodeRaw / 10
+	}
+
+	c.OpCode = opCodeParts[4]
+	c.ParamMode[1] = opCodeParts[2]
+	c.ParamMode[2] = opCodeParts[1]
+	c.ParamMode[3] = opCodeParts[0]
+}
+
+func (c *IntCodeComputer) getValue(i, param int) int {
+	value := 0
+	switch c.ParamMode[param] {
+	case 0:
+		value = c.Program[c.Program[i+param]]
+	case 1:
+		value = c.Program[i+param]
+	case 2:
+		value = c.Program[c.RelativeBase + c.Program[i+param]]
+	}
+	return value
+}
+
+func RunIntCodeComputer(originalProgram []int, dst *[]int, input [2]int, i int, returnOutput bool) {
 	program := make([]int, 5000)
 	copy(program, originalProgram)
+
+	computer := &IntCodeComputer{
+		Program: program,
+		ParamMode: make(map[int]int),
+	}
 
 	inputIndex := 0
 	relativeBase := 0
@@ -32,7 +71,9 @@ func IntCodeComputer(originalProgram []int, dst *[]int, input [2]int, i int, ret
 			opCodeParts[j] = opCodeRaw % 10
 			opCodeRaw = opCodeRaw / 10
 		}
-		fmt.Println(opCodeParts)
+		// fmt.Println(opCodeParts)
+
+		computer.ParseOpCode(i)
 
 		opCode := opCodeParts[4]
 		// paramOneMode := opCodeParts[2]
@@ -52,6 +93,9 @@ func IntCodeComputer(originalProgram []int, dst *[]int, input [2]int, i int, ret
 		} else if paramMode[1] == 2 {
 			paramOne = program[relativeBase + program[i+1]]
 		}
+		fmt.Println("===")
+		fmt.Println("paramOne", paramMode[1], paramOne)
+		fmt.Println("paramOne", computer.ParamMode[1], computer.getValue(i, 1))
 
 		switch opCode {
 		case 0:
