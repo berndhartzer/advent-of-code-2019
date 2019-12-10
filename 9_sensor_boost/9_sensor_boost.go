@@ -8,6 +8,7 @@ func SensorBoostPartOne(program []int, input int) []int {
 
 type IntCodeComputer struct {
 	Program []int
+	InstructionPointer int
 	OpCode int
 	ParamMode map[int]int
 	RelativeBase int
@@ -57,7 +58,7 @@ func RunIntCodeComputer(originalProgram []int, dst *[]int, input [2]int, i int, 
 	program := make([]int, 5000)
 	copy(program, originalProgram)
 
-	computer := &IntCodeComputer{
+	icc := &IntCodeComputer{
 		Program: program,
 		ParamMode: make(map[int]int),
 	}
@@ -67,62 +68,70 @@ func RunIntCodeComputer(originalProgram []int, dst *[]int, input [2]int, i int, 
 	for {
 		if program[i] == 99 {
 			if returnOutput {
-				// return *(dst)[len(*dst)-1], i, true
 				return
 			}
 			break
 		}
 
-		computer.ParseOpCode(i)
+		icc.ParseOpCode(i)
 
-		switch computer.OpCode {
-		case 0:
-			return // TODO: remove
-		case 1, 2:
-			if computer.OpCode == 1 {
-				computer.putValue(i, 3, (computer.getValue(i, 1) + computer.getValue(i, 2)))
-			} else {
-				computer.putValue(i, 3, (computer.getValue(i, 1) * computer.getValue(i, 2)))
-			}
+		switch icc.OpCode {
+		case 1:
+			icc.putValue(i, 3, (icc.getValue(i, 1) + icc.getValue(i, 2)))
+			i += 4
 
+		case 2:
+			icc.putValue(i, 3, (icc.getValue(i, 1) * icc.getValue(i, 2)))
 			i += 4
 
 		case 3:
-			computer.putValue(i, 1, input[inputIndex])
+			icc.putValue(i, 1, input[inputIndex])
 
 			inputIndex += 1
 			i += 2
 
 		case 4:
-			*dst = append(*dst, computer.getValue(i, 1))
+			*dst = append(*dst, icc.getValue(i, 1))
+
 			i += 2
 			if returnOutput {
-				// return program[len(program)-1], i, false
 				return
 			}
 
-		case 5, 6:
-			if (computer.OpCode == 5 && computer.getValue(i, 1) != 0) || (computer.OpCode == 6 && computer.getValue(i, 1) == 0) {
-				i = computer.getValue(i, 2)
+		case 5:
+			if icc.getValue(i, 1) != 0 {
+				i = icc.getValue(i, 2)
+			} else {
+				i += 3
+			}
+		case 6:
+			if icc.getValue(i, 1) == 0 {
+				i = icc.getValue(i, 2)
 			} else {
 				i += 3
 			}
 
-		case 7, 8:
-			if (computer.OpCode == 7 && computer.getValue(i, 1) < computer.getValue(i, 2)) || (computer.OpCode == 8 && computer.getValue(i, 1) == computer.getValue(i, 2)) {
-				computer.putValue(i, 3, 1)
+		case 7:
+			if icc.getValue(i, 1) < icc.getValue(i, 2) {
+				icc.putValue(i, 3, 1)
 			} else {
-				computer.putValue(i, 3, 0)
+				icc.putValue(i, 3, 0)
+			}
+			i += 4
+
+		case 8:
+			if icc.getValue(i, 1) == icc.getValue(i, 2) {
+				icc.putValue(i, 3, 1)
+			} else {
+				icc.putValue(i, 3, 0)
 			}
 			i += 4
 
 		case 9:
-			// relativeBase += paramOne
-			computer.AdjustRelativeBase(computer.getValue(i, 1))
+			icc.AdjustRelativeBase(icc.getValue(i, 1))
 			i += 2
 		}
 	}
 
-	// return dst[len(dst)-1], i, false
 	return
 }
