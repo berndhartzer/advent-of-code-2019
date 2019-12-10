@@ -1,17 +1,17 @@
 package nine_sensor_boost
 
-func SensorBoostPartOne(program []int, input int) []int {
+func SensorBoost(program []int, input int) []int {
 	output := []int{}
 	RunIntCodeComputer(program, &output, [2]int{input, input}, 0, false)
 	return output
 }
 
 type IntCodeComputer struct {
-	Program []int
+	Program            []int
 	InstructionPointer int
-	OpCode int
-	ParamMode map[int]int
-	RelativeBase int
+	OpCode             int
+	ParamMode          map[int]int
+	RelativeBase       int
 }
 
 func (c *IntCodeComputer) ParseOpCode(i int) {
@@ -36,7 +36,7 @@ func (c *IntCodeComputer) getValue(i, param int) int {
 	case 1:
 		value = c.Program[i+param]
 	case 2:
-		value = c.Program[c.RelativeBase + c.Program[i+param]]
+		value = c.Program[c.RelativeBase+c.Program[i+param]]
 	}
 	return value
 }
@@ -46,7 +46,7 @@ func (c *IntCodeComputer) putValue(i, param, value int) {
 	case 0:
 		c.Program[c.Program[i+param]] = value
 	case 2:
-		c.Program[c.RelativeBase + c.Program[i+param]] = value
+		c.Program[c.RelativeBase+c.Program[i+param]] = value
 	}
 }
 
@@ -59,7 +59,7 @@ func RunIntCodeComputer(originalProgram []int, dst *[]int, input [2]int, i int, 
 	copy(program, originalProgram)
 
 	icc := &IntCodeComputer{
-		Program: program,
+		Program:   program,
 		ParamMode: make(map[int]int),
 	}
 
