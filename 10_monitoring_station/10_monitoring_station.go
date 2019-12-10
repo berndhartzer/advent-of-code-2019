@@ -19,7 +19,18 @@ func MonitoringStationPartOne(asteroids []string) int {
 	}
 
 	for thisLoc, thisAsteroid := range asteroidMap {
-		fmt.Println(thisLoc, thisAsteroid)
+		if !thisAsteroid {
+			continue
+		}
+		fmt.Println("asteroid", thisLoc, thisAsteroid)
+
+		for otherLoc, otherAsteroid := range asteroidMap {
+			if thisLoc == otherLoc || !otherAsteroid {
+				continue
+			}
+			fmt.Println(otherLoc, otherAsteroid)
+		}
+
 
 
 	}
