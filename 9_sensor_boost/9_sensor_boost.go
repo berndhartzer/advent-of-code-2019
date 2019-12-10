@@ -1,11 +1,6 @@
 package nine_sensor_boost
 
-import (
-	"fmt"
-)
-
 func SensorBoostPartOne(program []int, input int) []int {
-	// output, _, _ := RunIntCodeComputer(program, &dst, [2]int{0, 0}, 0, false)
 	output := []int{}
 	RunIntCodeComputer(program, &output, [2]int{input, input}, 0, false)
 	return output
@@ -46,12 +41,9 @@ func (c *IntCodeComputer) getValue(i, param int) int {
 }
 
 func (c *IntCodeComputer) putValue(i, param, value int) {
-	value := 0
 	switch c.ParamMode[param] {
 	case 0:
 		c.Program[c.Program[i+param]] = value
-	// case 1:
-	// 	value = c.Program[i+param]
 	case 2:
 		c.Program[c.RelativeBase + c.Program[i+param]] = value
 	}
@@ -71,7 +63,7 @@ func RunIntCodeComputer(originalProgram []int, dst *[]int, input [2]int, i int, 
 	}
 
 	inputIndex := 0
-	relativeBase := 0
+
 	for {
 		if program[i] == 99 {
 			if returnOutput {
@@ -81,101 +73,27 @@ func RunIntCodeComputer(originalProgram []int, dst *[]int, input [2]int, i int, 
 			break
 		}
 
-		opCodeRaw := program[i]
-		opCodeParts := [5]int{}
-		for j := 4; j >= 0; j -= 1 {
-			opCodeParts[j] = opCodeRaw % 10
-			opCodeRaw = opCodeRaw / 10
-		}
-		// fmt.Println(opCodeParts)
-
 		computer.ParseOpCode(i)
 
-		opCode := opCodeParts[4]
-		// paramOneMode := opCodeParts[2]
-		// paramTwoMode := opCodeParts[1]
-		// paramThreeMode := opCodeParts[0]
-		paramMode := map[int]int{
-			1: opCodeParts[2],
-			2: opCodeParts[1],
-			3: opCodeParts[0],
-		}
-
-		paramOne := 0
-		if paramMode[1] == 0 {
-			paramOne = program[program[i+1]]
-		} else if paramMode[1] == 1 {
-			paramOne = program[i+1]
-		} else if paramMode[1] == 2 {
-			paramOne = program[relativeBase + program[i+1]]
-		}
-		fmt.Println("===")
-		fmt.Println("paramOne", paramMode[1], paramOne)
-		fmt.Println("paramOne", computer.ParamMode[1], computer.getValue(i, 1))
-
-		// switch opCode 
 		switch computer.OpCode {
 		case 0:
 			return // TODO: remove
 		case 1, 2:
-			// paramTwo := 0
-			// if paramMode[2] == 0 {
-			// 	paramTwo = program[program[i+2]]
-			// } else if paramMode[2] == 1 {
-			// 	paramTwo = program[i+2]
-			// } else if paramMode[2] == 2 {
-			// 	paramTwo = program[relativeBase + program[i+2]]
-			// }
-
-			// outputPos := program[i+3]
-			//paramThree := 0
-			//if paramMode[3] == 0 {
-			//	paramThree = program[program[i+3]]
-			//} else if paramMode[3] == 1 {
-			//	// 
-			//} else if paramMode[3] == 2 {
-			//	paramThree = program[relativeBase + program[i+3]]
-			//}
-
-			// if opCode == 1 
 			if computer.OpCode == 1 {
-				// program[outputPos] = paramOne + paramTwo
-				// program[paramThree] = paramOne + paramTwo
 				computer.putValue(i, 3, (computer.getValue(i, 1) + computer.getValue(i, 2)))
 			} else {
-				// program[outputPos] = paramOne * paramTwo
-				// program[paramThree] = paramOne * paramTwo
 				computer.putValue(i, 3, (computer.getValue(i, 1) * computer.getValue(i, 2)))
 			}
 
 			i += 4
 
 		case 3:
-			// posOne := program[i+1]
-			// if paramMode[1] == 0 {
-			// 	program[posOne] = input[inputIndex]
-			// } else if paramMode[1] == 2 {
-			// 	// program[posOne] = input[inputIndex]
-			// 	program[relativeBase + program[paramOne]] = input[inputIndex]
-			// }
-
-
-			// paramOne := 0
-			// if paramMode[1] == 0 {
-			// 	program[program[i+1]] = input[inputIndex]
-			// } else if paramMode[1] == 1 {
-			// 	// paramOne = program[i+1]
-			// } else if paramMode[1] == 2 {
-			// 	program[relativeBase + program[i+1]] = input[inputIndex]
-			// }
-
 			computer.putValue(i, 1, input[inputIndex])
 
 			inputIndex += 1
 			i += 2
 
 		case 4:
-			// program = append(program, paramOne)
 			*dst = append(*dst, computer.getValue(i, 1))
 			i += 2
 			if returnOutput {
@@ -184,54 +102,23 @@ func RunIntCodeComputer(originalProgram []int, dst *[]int, input [2]int, i int, 
 			}
 
 		case 5, 6:
-			// paramTwo := 0
-			// if paramMode[2] == 0 {
-			// 	paramTwo = program[program[i+2]]
-			// } else if paramMode[2] == 1 {
-			// 	paramTwo = program[i+2]
-			// } else if paramMode[2] == 2 {
-			// 	paramTwo = program[relativeBase + program[i+2]]
-			// }
-
 			if (computer.OpCode == 5 && computer.getValue(i, 1) != 0) || (computer.OpCode == 6 && computer.getValue(i, 1) == 0) {
-				// i = paramTwo
 				i = computer.getValue(i, 2)
 			} else {
 				i += 3
 			}
 
 		case 7, 8:
-			paramTwo := 0
-			if paramMode[2] == 0 {
-				paramTwo = program[program[i+2]]
-			} else if paramMode[2] == 1 {
-				paramTwo = program[i+2]
-			} else if paramMode[2] == 2 {
-				paramTwo = program[relativeBase + program[i+2]]
-			}
-
-			// outputPos := program[i+3]
-			paramThree := 0
-			if paramMode[3] == 0 {
-				paramThree = program[program[i+3]]
-			} else if paramMode[3] == 1 {
-				// 
-			} else if paramMode[3] == 2 {
-				paramThree = program[relativeBase + program[i+3]]
-			}
-
-			if (opCode == 7 && paramOne < paramTwo) || (opCode == 8 && paramOne == paramTwo) {
-				// program[outputPos] = 1
-				program[paramThree] = 1
+			if (computer.OpCode == 7 && computer.getValue(i, 1) < computer.getValue(i, 2)) || (computer.OpCode == 8 && computer.getValue(i, 1) == computer.getValue(i, 2)) {
+				computer.putValue(i, 3, 1)
 			} else {
-				// program[outputPos] = 0
-				program[paramThree] = 0
+				computer.putValue(i, 3, 0)
 			}
 			i += 4
 
 		case 9:
 			// relativeBase += paramOne
-			computer.AdjustRelativeBase(getValue(i, 1))
+			computer.AdjustRelativeBase(computer.getValue(i, 1))
 			i += 2
 		}
 	}
