@@ -74,10 +74,9 @@ func MonitoringStationPartTwo(asteroids []string) int {
 		if !thisAsteroid {
 			continue
 		}
-		// fmt.Println("asteroid", thisLoc)
+		fmt.Println("asteroid: ", thisLoc)
 
 		visible := make(map[float64][]CoordTwo)
-		// visibleCount := 0
 
 		for otherLoc, otherAsteroid := range asteroidMap {
 			if thisLoc == otherLoc || !otherAsteroid {
@@ -89,8 +88,17 @@ func MonitoringStationPartTwo(asteroids []string) int {
 				Y: otherLoc.Y - thisLoc.Y,
 			}
 			distance := Abs(diff.X) + Abs(diff.Y)
-			angle := ((math.Atan2(float64(diff.Y), float64(diff.X)) * 180) / math.Pi) + 180
-			// fmt.Println(diff, distance, angle)
+			// angle := ((math.Atan2(float64(diff.Y), float64(diff.X)) * 180) / math.Pi) + 180
+
+			// dot := thisLoc.X*otherLoc.X + thisLoc.Y*otherLoc.Y
+			// det := thisLoc.X*otherLoc.Y - thisLoc.Y*otherLoc.X
+			// angle := math.Atan2(float64(det), float64(dot))
+
+			deltaY := (thisLoc.Y - otherLoc.Y)
+			deltaX := (otherLoc.X - thisLoc.X)
+			angle := (math.Atan2(float64(deltaY), float64(deltaX))) * (180 / math.Pi)
+
+			fmt.Println("other: ", otherLoc, diff, distance, angle)
 
 			visible[angle] = append(visible[angle], CoordTwo{otherLoc.X, otherLoc.Y, distance})
 		}
@@ -115,7 +123,7 @@ func MonitoringStationPartTwo(asteroids []string) int {
 	fmt.Println(sorted, len(sorted))
 
 	fmt.Println(sorted[0], targets[sorted[0]])
-	fmt.Println(sorted[209], targets[sorted[209]])
+	// fmt.Println(sorted[209], targets[sorted[209]])
 
 	fmt.Println(asteroidBase)
 	return 0

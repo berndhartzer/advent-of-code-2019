@@ -104,7 +104,28 @@ func TestMonitoringStationPartOneActualInput(t *testing.T) {
 	t.Log(output)
 }
 
+func TestMonitoringStationPartTwoExampleInputTemp(t *testing.T) {
+	exampleInput := []string{
+		// ".#....#####...#..",
+		// "##...##.#####..##",
+		// "##...#...#.#####.",
+		// "..#.....#...###..",
+		// "..#.#.....#....##",
+			// 0
+		"......#.#........",
+		".................",
+		"#.......#.......#", // 90
+		".................",
+		"........#........",
+			// 180
+	}
+
+	output := MonitoringStationPartTwo(exampleInput)
+	t.Log(output)
+}
+
 func TestMonitoringStationPartTwoExampleInput(t *testing.T) {
+	t.Skip()
 	exampleInput := []string{
 		".#..##.###...#######",
 		"##.############..##.",
