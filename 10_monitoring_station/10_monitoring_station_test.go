@@ -103,3 +103,35 @@ func TestMonitoringStationPartOneActualInput(t *testing.T) {
 	output := MonitoringStationPartOne(input)
 	t.Log(output)
 }
+
+func TestMonitoringStationPartTwoExampleInput(t *testing.T) {
+	exampleInput := []string{
+		".#..##.###...#######",
+		"##.############..##.",
+		".#.######.########.#",
+		".###.#######.####.#.",
+		"#####.##.#.##.###.##",
+		"..#####..#.#########",
+		"####################",
+		"#.####....###.#.#.##",
+		"##.#################",
+		"#####.##.###..####..",
+		"..######..##.#######",
+		"####.##.####...##..#",
+		".#####..#.######.###",
+		"##...#.##########...",
+		"#.##########.#######",
+		".####.#.###.###.#.##",
+		"....##.##.###..#####",
+		".#.#.###########.###",
+		"#.#.#.#####.####.###",
+		"###.##.####.##.#..##",
+	}
+	expectedOutput := 802
+
+	output := MonitoringStationPartTwo(exampleInput)
+
+	if output != expectedOutput {
+		t.Fail()
+	}
+}
