@@ -1,8 +1,7 @@
 package ten_monitoring_station
 
 import (
-	"fmt"
-	// "math" // atan2
+	"math"
 )
 
 type Coord struct {
@@ -18,22 +17,37 @@ func MonitoringStationPartOne(asteroids []string) int {
 		}
 	}
 
+	highest := 0
 	for thisLoc, thisAsteroid := range asteroidMap {
 		if !thisAsteroid {
 			continue
 		}
-		fmt.Println("asteroid", thisLoc, thisAsteroid)
+
+		visible := make(map[float64]bool)
+		visibleCount := 0
 
 		for otherLoc, otherAsteroid := range asteroidMap {
 			if thisLoc == otherLoc || !otherAsteroid {
 				continue
 			}
-			fmt.Println(otherLoc, otherAsteroid)
+
+			diff := Coord{
+				X: otherLoc.X - thisLoc.X,
+				Y: otherLoc.Y - thisLoc.Y,
+			}
+			angle := ((math.Atan2(float64(diff.Y), float64(diff.X)) * 180) / math.Pi) + 180
+
+			_, ok := visible[angle]
+			if !ok {
+				visibleCount += 1
+				visible[angle] = true
+			}
 		}
 
-
-
+		if visibleCount > highest {
+			highest = visibleCount
+		}
 	}
 
-	return 0
+	return highest
 }
