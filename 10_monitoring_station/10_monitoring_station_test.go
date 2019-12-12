@@ -104,28 +104,7 @@ func TestMonitoringStationPartOneActualInput(t *testing.T) {
 	t.Log(output)
 }
 
-func TestMonitoringStationPartTwoExampleInputTemp(t *testing.T) {
-	exampleInput := []string{
-		// ".#....#####...#..",
-		// "##...##.#####..##",
-		// "##...#...#.#####.",
-		// "..#.....#...###..",
-		// "..#.#.....#....##",
-			// 0
-		"......#.#........",
-		".................",
-		"#.......#.......#", // 90
-		".................",
-		"........#........",
-			// 180
-	}
-
-	output := MonitoringStationPartTwo(exampleInput)
-	t.Log(output)
-}
-
 func TestMonitoringStationPartTwoExampleInput(t *testing.T) {
-	t.Skip()
 	exampleInput := []string{
 		".#..##.###...#######",
 		"##.############..##.",
@@ -150,9 +129,23 @@ func TestMonitoringStationPartTwoExampleInput(t *testing.T) {
 	}
 	expectedOutput := 802
 
-	output := MonitoringStationPartTwo(exampleInput)
+	output := MonitoringStationPartTwo(exampleInput, 200)
 
 	if output != expectedOutput {
 		t.Fail()
 	}
+}
+
+func TestMonitoringStationPartTwoActualInput(t *testing.T) {
+	file, _ := os.Open("./10_input.txt")
+
+	var input []string
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
+		input = append(input, line)
+	}
+
+	output := MonitoringStationPartTwo(input, 200)
+	t.Log(output)
 }

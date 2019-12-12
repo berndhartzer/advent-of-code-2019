@@ -2,12 +2,11 @@ package ten_monitoring_station
 
 import (
 	"math"
-	"fmt"
 	"sort"
 )
 
 type Coord struct {
-	X, Y int
+	X, Y, Distance int
 }
 
 func MonitoringStationPartOne(asteroids []string) int {
@@ -15,7 +14,7 @@ func MonitoringStationPartOne(asteroids []string) int {
 
 	for y, row := range asteroids {
 		for x, loc := range row {
-			asteroidMap[Coord{x, y}] = (loc == '#')
+			asteroidMap[Coord{X: x, Y: y}] = (loc == '#')
 		}
 	}
 
@@ -54,79 +53,92 @@ func MonitoringStationPartOne(asteroids []string) int {
 	return highest
 }
 
-type CoordTwo struct {
-	X, Y, Distance int
-}
-
-func MonitoringStationPartTwo(asteroids []string) int {
-	asteroidMap := make(map[CoordTwo]bool)
+func MonitoringStationPartTwo(asteroids []string, vaporiseLimit int) int {
+	asteroidMap := make(map[Coord]bool)
 
 	for y, row := range asteroids {
 		for x, loc := range row {
-			asteroidMap[CoordTwo{X: x, Y: y}] = (loc == '#')
+			asteroidMap[Coord{X: x, Y: y}] = (loc == '#')
 		}
 	}
 
 	highest := 0
-	asteroidBase := CoordTwo{}
-	targets := make(map[float64][]CoordTwo)
+	targets := make(map[float64][]Coord)
+
 	for thisLoc, thisAsteroid := range asteroidMap {
 		if !thisAsteroid {
 			continue
 		}
-		fmt.Println("asteroid: ", thisLoc)
 
-		visible := make(map[float64][]CoordTwo)
+		visible := make(map[float64][]Coord)
 
 		for otherLoc, otherAsteroid := range asteroidMap {
 			if thisLoc == otherLoc || !otherAsteroid {
 				continue
 			}
 
-			diff := CoordTwo{
+			diff := Coord{
 				X: otherLoc.X - thisLoc.X,
 				Y: otherLoc.Y - thisLoc.Y,
 			}
 			distance := Abs(diff.X) + Abs(diff.Y)
-			// angle := ((math.Atan2(float64(diff.Y), float64(diff.X)) * 180) / math.Pi) + 180
+			angle := math.Atan2(float64(diff.Y), float64(diff.X)) * (180 / math.Pi)
 
-			// dot := thisLoc.X*otherLoc.X + thisLoc.Y*otherLoc.Y
-			// det := thisLoc.X*otherLoc.Y - thisLoc.Y*otherLoc.X
-			// angle := math.Atan2(float64(det), float64(dot))
+			// rudimentary angle correction for easier sorting
+			if angle < -90 {
+				angle += 450
+			} else {
+				angle += 90
+			}
 
-			deltaY := (thisLoc.Y - otherLoc.Y)
-			deltaX := (otherLoc.X - thisLoc.X)
-			angle := (math.Atan2(float64(deltaY), float64(deltaX))) * (180 / math.Pi)
-
-			fmt.Println("other: ", otherLoc, diff, distance, angle)
-
-			visible[angle] = append(visible[angle], CoordTwo{otherLoc.X, otherLoc.Y, distance})
+			visible[angle] = append(visible[angle], Coord{otherLoc.X, otherLoc.Y, distance})
 		}
-		// fmt.Println(visible)
 
 		if len(visible) > highest {
 			highest = len(visible)
-			asteroidBase = thisLoc
-			targets = make(map[float64][]CoordTwo)
+			targets = make(map[float64][]Coord)
 			for key, value := range visible {
 				targets[key] = value
 			}
 		}
 	}
 
-	// fmt.Println(targets)
 	sorted := []float64{}
 	for angle := range targets {
 		sorted = append(sorted, angle)
 	}
 	sort.Float64s(sorted)
-	fmt.Println(sorted, len(sorted))
 
-	fmt.Println(sorted[0], targets[sorted[0]])
-	// fmt.Println(sorted[209], targets[sorted[209]])
+	twoHundredth := 0
+	vaporised := 0
+	i := 0
+	for vaporised < vaporiseLimit {
+		angle := sorted[i]
 
-	fmt.Println(asteroidBase)
-	return 0
+		if len(targets[angle]) > 0 {
+			target := 0
+
+			if len(targets[angle]) != 1 {
+				closest := 0
+				for j, loc := range targets[angle] {
+					if loc.Distance < closest || closest == 0 {
+						closest = loc.Distance
+						target = j
+					}
+				}
+			}
+
+			twoHundredth = (targets[angle][target].X * 100) + targets[angle][target].Y
+			vaporised += 1
+		}
+
+		i += 1
+		if i >= len(targets) {
+			i = 0
+		}
+	}
+
+	return twoHundredth
 }
 
 func Abs(n int) int {
