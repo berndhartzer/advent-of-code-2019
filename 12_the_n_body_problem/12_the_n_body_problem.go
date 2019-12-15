@@ -1,8 +1,10 @@
 package twelve_the_n_body_problem
 
 import (
+	"fmt"
 	"regexp"
 	"strconv"
+	"strings"
 )
 
 type Axis struct {
@@ -51,6 +53,10 @@ func (m *Moon) getTotalEnergy() int {
 	return potentialEnergy * kineticEnergy
 }
 
+func (m *Moon) String() string {
+	return fmt.Sprintf("%d,%d,%d,%d,%d,%d", m.Position.X, m.Position.Y, m.Position.Z, m.Velocity.X, m.Velocity.Y, m.Velocity.Z)
+}
+
 func TheNBodyProblemPartOne(moonPositions []string, simulations int) int {
 	moons := []*Moon{}
 
@@ -88,7 +94,53 @@ func TheNBodyProblemPartOne(moonPositions []string, simulations int) int {
 }
 
 func TheNBodyProblemPartTwo(moonPositions []string) int {
-	return 0
+	moons := []*Moon{}
+
+	re := regexp.MustCompile(`[-]?\d[\d]*[\.]?[\d{2}]*`)
+	for _, position := range moonPositions {
+		nums := re.FindAllString(position, -1)
+		x, _ := strconv.Atoi(nums[0])
+		y, _ := strconv.Atoi(nums[1])
+		z, _ := strconv.Atoi(nums[2])
+
+		moon := &Moon{
+			Position: Axis{x, y, z},
+		}
+		moons = append(moons, moon)
+	}
+
+	states := make(map[string]bool)
+
+	repeated := false
+	for !repeated {
+		for i, moon := range moons {
+			for j := i + 1; j < len(moons); j++ {
+				moon.applyGravity(moons[j])
+			}
+		}
+
+		for _, moon := range moons {
+			moon.applyVelocity()
+		}
+
+		moonString := []string{}
+		for _, moon := range moons {
+			moonString = append(moonString, moon.String())
+		}
+		fullMoonString := strings.Join(moonString, ",")
+		// fmt.Println(fullMoonString)
+
+		_, ok := states[fullMoonString]
+		if !ok {
+			states[fullMoonString] = true
+		} else {
+			repeated = true
+		}
+
+		// repeated = true
+	}
+
+	return len(states)
 }
 
 func Abs(n int) int {
