@@ -87,6 +87,10 @@ func TheNBodyProblemPartOne(moonPositions []string, simulations int) int {
 	return total
 }
 
+func TheNBodyProblemPartTwo(moonPositions []string) int {
+	return 0
+}
+
 func Abs(n int) int {
 	if n < 0 {
 		return -n
