@@ -53,8 +53,17 @@ func (m *Moon) getTotalEnergy() int {
 	return potentialEnergy * kineticEnergy
 }
 
-func (m *Moon) String() string {
-	return fmt.Sprintf("%d,%d,%d,%d,%d,%d", m.Position.X, m.Position.Y, m.Position.Z, m.Velocity.X, m.Velocity.Y, m.Velocity.Z)
+func (m *Moon) stringAxis(axis string) string {
+	output := ""
+	switch axis {
+	case "X":
+		output = fmt.Sprintf("%d,%d", m.Position.X, m.Velocity.X)
+	case "Y":
+		output = fmt.Sprintf("%d,%d", m.Position.Y, m.Velocity.Y)
+	case "Z":
+		output = fmt.Sprintf("%d,%d", m.Position.Z, m.Velocity.Z)
+	}
+	return output
 }
 
 func TheNBodyProblemPartOne(moonPositions []string, simulations int) int {
@@ -109,10 +118,51 @@ func TheNBodyProblemPartTwo(moonPositions []string) int {
 		moons = append(moons, moon)
 	}
 
-	states := make(map[string]bool)
+	xStates := make(map[string]bool)
+	yStates := make(map[string]bool)
+	zStates := make(map[string]bool)
+	x := 0
+	y := 0
+	z := 0
 
-	repeated := false
-	for !repeated {
+	i := 0
+	for x == 0 || y == 0 || z == 0 {
+		xStateStringParts := []string{}
+		yStateStringParts := []string{}
+		zStateStringParts := []string{}
+		for _, moon := range moons {
+			xStateStringParts = append(xStateStringParts, moon.stringAxis("X"))
+			yStateStringParts = append(yStateStringParts, moon.stringAxis("Y"))
+			zStateStringParts = append(zStateStringParts, moon.stringAxis("Z"))
+		}
+
+		if x == 0 {
+			xString := strings.Join(xStateStringParts, ",")
+			_, ok := xStates[xString]
+			if ok {
+				x = i
+			}
+			xStates[xString] = true
+		}
+
+		if y == 0 {
+			yString := strings.Join(yStateStringParts, ",")
+			_, ok := yStates[yString]
+			if ok {
+				y = i
+			}
+			yStates[yString] = true
+		}
+
+		if z == 0 {
+			zString := strings.Join(zStateStringParts, ",")
+			_, ok := zStates[zString]
+			if ok {
+				z = i
+			}
+			zStates[zString] = true
+		}
+
 		for i, moon := range moons {
 			for j := i + 1; j < len(moons); j++ {
 				moon.applyGravity(moons[j])
@@ -123,24 +173,10 @@ func TheNBodyProblemPartTwo(moonPositions []string) int {
 			moon.applyVelocity()
 		}
 
-		moonString := []string{}
-		for _, moon := range moons {
-			moonString = append(moonString, moon.String())
-		}
-		fullMoonString := strings.Join(moonString, ",")
-		// fmt.Println(fullMoonString)
-
-		_, ok := states[fullMoonString]
-		if !ok {
-			states[fullMoonString] = true
-		} else {
-			repeated = true
-		}
-
-		// repeated = true
+		i += 1
 	}
 
-	return len(states)
+	return LCM(x, y, z)
 }
 
 func Abs(n int) int {
@@ -148,4 +184,26 @@ func Abs(n int) int {
 		return -n
 	}
 	return n
+}
+
+// https://siongui.github.io/2017/06/03/go-find-lcm-by-gcd/
+// greatest common divisor (GCD) via Euclidean algorithm
+func GCD(a, b int) int {
+	for b != 0 {
+		t := b
+		b = a % b
+		a = t
+	}
+	return a
+}
+
+// find Least Common Multiple (LCM) via GCD
+func LCM(a, b int, integers ...int) int {
+	result := a * b / GCD(a, b)
+
+	for i := 0; i < len(integers); i++ {
+		result = LCM(result, integers[i])
+	}
+
+	return result
 }

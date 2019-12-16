@@ -68,5 +68,17 @@ func TestTheNBodyProblemPartTwoExampleInput(t *testing.T) {
 			t.Fail()
 		}
 	}
+}
 
+func TestTheNBodyProblemPartTwoActualInput(t *testing.T) {
+	var input []string
+	file, _ := os.Open("./12_input.txt")
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
+		input = append(input, line)
+	}
+
+	output := TheNBodyProblemPartTwo(input)
+	t.Log(output)
 }
