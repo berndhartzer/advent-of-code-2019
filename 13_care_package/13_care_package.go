@@ -24,6 +24,10 @@ func CarePackagePartOne(program []int) int {
 	return tileCount
 }
 
+func CarePackagePartTwo(program []int) int {
+	return 0
+}
+
 type IntCodeComputer struct {
 	Program            []int
 	InstructionPointer int
