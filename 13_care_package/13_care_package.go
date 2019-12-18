@@ -1,5 +1,26 @@
 package thirteen_care_package
 
+import (
+	"fmt"
+)
+
+type Game struct {
+	Grid    map[string]int
+	PaddleX int
+	BallX   int
+	Score   int
+}
+
+func (g *Game) moveJoystick() int {
+	position := 0
+	if g.PaddleX > g.BallX {
+		position = -1
+	} else if g.PaddleX < g.BallX {
+		position = 1
+	}
+	return position
+}
+
 func CarePackagePartOne(program []int) int {
 	computer := NewIntCodeComputer(program)
 	allOutput := []int{}
@@ -25,7 +46,53 @@ func CarePackagePartOne(program []int) int {
 }
 
 func CarePackagePartTwo(program []int) int {
-	return 0
+	// Insert quarters
+	program[0] = 2
+
+	game := &Game{}
+	game.Grid = make(map[string]int)
+
+	computer := NewIntCodeComputer(program)
+	allOutput := []int{}
+
+	i := 1
+	x := 0
+	y := 0
+	input := 0
+	terminated := false
+	for !terminated {
+		terminated = computer.Run(&allOutput, [2]int{input, input}, true)
+		output := allOutput[len(allOutput)-1]
+
+		switch i {
+		case 1:
+			x = output
+		case 2:
+			y = output
+		case 3:
+			if x == -1 && y == 0 {
+				game.Score = output
+			} else {
+				game.Grid[fmt.Sprintf("%d,%d", x, y)] = output
+
+				switch output {
+				case 3:
+					game.PaddleX = x
+				case 4:
+					game.BallX = x
+				}
+			}
+		}
+
+		input = game.moveJoystick()
+
+		i += 1
+		if i > 3 {
+			i = 1
+		}
+	}
+
+	return game.Score
 }
 
 type IntCodeComputer struct {
